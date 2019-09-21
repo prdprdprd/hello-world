@@ -1,0 +1,68 @@
+College1(cid,cname,city,totemp)
+create table College2(cid number,cname varchar2(25),city varchar2(25),totemp number);
+insert into College2(cid,cname,city,totemp)values(1,'sb jain','nagpur',50)
+insert into College2(cid,cname,city,totemp)values(2,'mit','pune',60)
+insert into College2(cid,cname,city,totemp)values(3,'iit','mumbai',70)
+
+select * from College2 order by cid;
+
+Teacher1( tid, tname,cid,city,sal)
+create table Teacher2(tid number,tname varchar2(25),cid Number,city varchar2(25),sal Number)
+insert into Teacher2(tid, tname,cid,city,sal)values(1,'sham',2,'nagpur',50000)
+insert into Teacher2(tid, tname,cid,city,sal)values(2,'ram',2,'pune',60000)
+insert into Teacher2(tid, tname,cid,city,sal)values(3,'dharam',2,'mumbai',70000)
+insert into Teacher2(tid, tname,cid,city,sal)values(1,'laxman',1,'nagpur',50000)
+insert into Teacher2(tid, tname,cid,city,sal)values(2,'dham',1,'pune',60000)
+insert into Teacher2(tid, tname,cid,city,sal)values(3,'qram',1,'mumbai',70000)
+
+insert into Teacher2(tid, tname,cid,city,sal)values(1,'laxman',3,'nagpur',80000)
+insert into Teacher2(tid, tname,cid,city,sal)values(2,'dham',3,'pune',150000)
+insert into Teacher2(tid, tname,cid,city,sal)values(3,'qram',3,'mumbai',90000)
+select * from Teacher2 order by cid;
+select cname from College2 where city='pune'
+
+Teach3( tid,sid, classname)
+create table Teach3(tid Number,sid Number,classname number);
+insert into Teach3(tid, sid,classname)values(1,1,'101');
+insert into Teach3(tid, sid,classname)values(2,2,'102');
+insert into Teach3(tid, sid,classname)values(3,3,'103');
+select distinct * from Teach3
+order by tid
+
+Subject2(sid,sname,duration, totlect)
+create table Subject2(sid Number,sname varchar2(25),duration number, totlect number)
+insert into Subject2(sid,sname,duration, totlect)values(1,'maths',1,2);
+insert into Subject2(sid,sname,duration, totlect)values(2,'physics',2,3);
+insert into Subject2(sid,sname,duration, totlect)values(3,'chemistry',3,4);
+ 
+1) List college names located at pune
+select cname from College2 where city='pune'
+
+2)Find all teachers who lives in same city as that of their college
+select distinct tname from College2 , Teacher2
+where College2.city=Teacher2.city and College2.cid=Teacher2.cid;
+
+3) Find names of teacher who teaches math.
+select tname from Teacher where tid in(select tid from teach where sid in(select sid from subject where sname='Math'));
+
+4)Find name of teacher with thier id who earn more salary than each teacher of college whose
+id is 111.
+select tname from teacher where sal>(select max(sal)from teacher where cid=1)
+
+5)Find name of teacher who got maximum salary
+select tname from teacher where sal=(select max(sal)from teacher)
+
+6)Find 5th highest salary paid to teacher.
+select distinct sal,tname from teacher t1 where(select count(distinct sal)from teacher t2 where t1.sal<=t2.sal)=5;
+
+7) Find all teachers who earn more that avg salary of all teachers of their college.
+select tname,sal from teacher t1 where sal>(select avg(sal)from teacher  t2 where t1.cid=t2.cid)
+
+8)Find name of teacher who teaches a subject whose name starts with M.
+select tname from teacher where tid in (select tid from teach where sid in(select sid from subject where sname like 'M%'))
+
+9)Give 10% hike in salary to teacher of college with id 112.
+update teacher set sal=(sal+(10/100)*sal)where tname = (select tname from teacher from teacher where cid =2);
+
+10) Find name of teacher who teaches subject math and its duration is 1hr.
+select tname from teacher where tid in (select tid from teacher where sid in (select sid from subject where sname='maths' and duration=1))
